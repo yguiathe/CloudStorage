@@ -1,0 +1,6 @@
+.confirmation-alert {
+	position: absolute;
+	z-index: 10;
+	margin-left: 40%;
+	margin-top: 155px;
+}

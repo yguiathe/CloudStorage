@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
+    <head>
+    </head>
+<body>
+    <tbody th:fragment="notes-list" id="notesList">
+    <tr th:each="note : ${myNotes}" th:attr="id=|note-${note.noteId}|">
+        <td>
+            <button type="button" class="btn btn-success" th:attr="onclick=|showNoteModal('${note.noteId}', '${note.noteTitle}', '${note.noteDescription}')|">Edit</button>
+            <a th:attr="href=|${note.noteId}|" class="btn btn-danger delete-note">Delete</a>
+        </td>
+        <th scope="row" th:text="${note.noteTitle}">Example Note Title</th>
+        <td th:text="${note.noteDescription}">Example Note Description </td>
+    </tr>
+    </tbody>
+
+    <tbody th:fragment="credentials-list" id="credentialsList">
+    <tr th:each="credential : ${myCredentials}" th:attr="id=|credential-${credential.credentialId}|">
+        <td>
+            <button type="button" class="btn btn-success" th:attr="onclick=|showCredentialModal('${credential.credentialId}', '${credential.url}', '${credential.username}', '${credential.clearPassword}')|">Edit</button>
+            <a th:attr="href=|${credential.credentialId}|" class="btn btn-danger delete-credential">Delete</a>
+        </td>
+        <th scope="row" th:text="${credential.url}">Example Credential URL</th>
+        <td th:text="${credential.username}">Example Credential Username</td>
+        <td th:text="${credential.password}">Example Credential Password</td>
+    </tr>
+    </tbody>
+</body>
+</html>
