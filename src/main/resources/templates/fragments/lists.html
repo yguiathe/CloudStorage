@@ -6,7 +6,7 @@
     <tbody th:fragment="notes-list" id="notesList">
     <tr th:each="note : ${myNotes}" th:attr="id=|note-${note.noteId}|">
         <td>
-            <button type="button" class="btn btn-success" th:attr="onclick=|showNoteModal('${note.noteId}', '${note.noteTitle}', '${note.noteDescription}')|">Edit</button>
+            <button type="button" class="btn btn-success edit-note" th:attr="onclick=|showNoteModal('${note.noteId}', '${note.noteTitle}', '${note.noteDescription}')|">Edit</button>
             <a th:attr="href=|${note.noteId}|" class="btn btn-danger delete-note">Delete</a>
         </td>
         <th scope="row" th:text="${note.noteTitle}">Example Note Title</th>
@@ -17,7 +17,7 @@
     <tbody th:fragment="credentials-list" id="credentialsList">
     <tr th:each="credential : ${myCredentials}" th:attr="id=|credential-${credential.credentialId}|">
         <td>
-            <button type="button" class="btn btn-success" th:attr="onclick=|showCredentialModal('${credential.credentialId}', '${credential.url}', '${credential.username}', '${credential.clearPassword}')|">Edit</button>
+            <button type="button" class="btn btn-success edit-credential" th:attr="onclick=|showCredentialModal('${credential.credentialId}', '${credential.url}', '${credential.username}', '${credential.clearPassword}')|">Edit</button>
             <a th:attr="href=|${credential.credentialId}|" class="btn btn-danger delete-credential">Delete</a>
         </td>
         <th scope="row" th:text="${credential.url}">Example Credential URL</th>
