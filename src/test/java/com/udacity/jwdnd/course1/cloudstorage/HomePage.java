@@ -107,6 +107,8 @@ public class HomePage {
     }
 
     public void uploadFile(String filename) throws InterruptedException {
+        this.jse.executeScript("arguments[0].click()", this.filesTabButton);
+        sleep(5000);
         this.fileUpload.sendKeys(filename);
         this.uploadButton.click();
         sleep(5000);
@@ -197,6 +199,18 @@ public class HomePage {
         return flag;
     }
 
+    public int countNotesInListWithTitle(String noteTitle) {
+        int count = 0;
+        List<WebElement> notes = this.notesTable.findElements(By.tagName("tr"));
+        for(WebElement note: notes) {
+            if(note.findElement(By.tagName("th")).getText().equals(noteTitle)) {
+                count += 1;
+            }
+        }
+
+        return count;
+    }
+
     public boolean credentialExistsInList(String url, String username, String password) {
         boolean flag = false;
         List<WebElement> credentials = this.credentialsTable.findElements(By.tagName("tr"));
@@ -221,6 +235,18 @@ public class HomePage {
         }
 
         return flag;
+    }
+
+    public int countFilesInListWithName(String filename) {
+        int count = 0;
+        List<WebElement> files = this.filesTable.findElements(By.tagName("tr"));
+        for(WebElement file: files) {
+            if(file.findElement(By.tagName("th")).getText().equals(filename)) {
+                count += 1;
+            }
+        }
+
+        return count;
     }
 
 }

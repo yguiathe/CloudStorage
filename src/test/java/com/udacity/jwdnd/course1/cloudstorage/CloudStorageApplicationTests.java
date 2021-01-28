@@ -25,6 +25,10 @@ class CloudStorageApplicationTests {
 	private static final String LASTNAME = "Carlton";
 	private static final String USERNAME = "vcarlton";
 	private static final String PASSWORD = "100@L-23ds";
+	private static final String FIRSTNAME_A = "Andra";
+	private static final String LASTNAME_A = "Day";
+	private static final String USERNAME_A = "aday";
+	private static final String PASSWORD_A = "78tr&Ll";
 	private static final String HOME_PAGE_TITLE = "Home";
 	private static final String SIGNUP_PAGE_TITLE = "Sign Up";
 	private static final String LOGIN_PAGE_TITLE = "Login";
@@ -76,14 +80,14 @@ class CloudStorageApplicationTests {
 
 	@Test
 	@Order(1)
-	public void loginPage() {
+	public void shouldSuccessfullyReturnLoginPage() {
 		driver.get(baseURL + "/login");
 		Assertions.assertEquals(LOGIN_PAGE_TITLE, driver.getTitle());
 	}
 
 	@Test
 	@Order(2)
-	public void successfulSignupAndLogin() throws InterruptedException {
+	public void shouldSuccessfullySignupAndLogin() throws InterruptedException {
 
 		driver.get(baseURL + "/signup");
 
@@ -105,7 +109,7 @@ class CloudStorageApplicationTests {
 
 	@Test
 	@Order(3)
-	public void unSuccessfulSignupGivenDuplicateUsername() {
+	public void shouldFailOnSignupWithExistingUsername() {
 
 		driver.get(baseURL + "/signup");
 
@@ -118,7 +122,7 @@ class CloudStorageApplicationTests {
 
 	@Test
 	@Order(4)
-	public void successfulFileUpload() throws InterruptedException {
+	public void shouldSuccessfullyUploadFile() throws InterruptedException {
 		driver.get(baseURL + "/login");
 
 		LoginPage loginPage = new LoginPage(driver);
@@ -135,7 +139,7 @@ class CloudStorageApplicationTests {
 
 	@Test
 	@Order(5)
-	public void successfulFileDeletion() throws InterruptedException {
+	public void shouldSuccessfullyDeleteFile() throws InterruptedException {
 
 		HomePage homePage = new HomePage(driver);
 		homePage.uploadFile(FILENAME_B);
@@ -143,18 +147,13 @@ class CloudStorageApplicationTests {
 		homePage.deleteFile(0);
 		sleep(5000);
 
-		Assertions.assertEquals(false, homePage.fileExistsInList(FILENAME_A));
+		Assertions.assertEquals(false, homePage.fileExistsInList(FilenameUtils.getName(FILENAME_A)));
 
 	}
 
 	@Test
 	@Order(6)
-	public void successfulNoteCreation() throws InterruptedException {
-
-		driver.get(baseURL + "/login");
-
-		LoginPage loginPage = new LoginPage(driver);
-		loginPage.login(USERNAME, PASSWORD);
+	public void shouldSuccessfullyCreateNote() throws InterruptedException {
 
 		HomePage homePage = new HomePage(driver);
 		homePage.addNote(FIRST_NOTE_TITLE, FIRST_NOTE_DESCRIPTION);
@@ -166,7 +165,7 @@ class CloudStorageApplicationTests {
 
 	@Test
 	@Order(7)
-	public void successfulNoteUpdate() throws InterruptedException {
+	public void shouldSuccessfullyViewAndUpdateNote() throws InterruptedException {
 		HomePage homePage = new HomePage(driver);
 
 		// Adding notes
@@ -188,7 +187,7 @@ class CloudStorageApplicationTests {
 
 	@Test
 	@Order(8)
-	public void successfulNoteDeletion() throws InterruptedException {
+	public void shouldSuccessfullyDeleteNote() throws InterruptedException {
 
 		HomePage homePage = new HomePage(driver);
 		homePage.deleteNote(0);
@@ -200,12 +199,7 @@ class CloudStorageApplicationTests {
 
 	@Test
 	@Order(9)
-	public void successfulCredentialCreation() throws InterruptedException {
-
-		driver.get(baseURL + "/login");
-
-		LoginPage loginPage = new LoginPage(driver);
-		loginPage.login(USERNAME, PASSWORD);
+	public void shouldSuccessfullyCreateCredential() throws InterruptedException {
 
 		HomePage homePage = new HomePage(driver);
 		sleep(5000);
@@ -222,7 +216,7 @@ class CloudStorageApplicationTests {
 
 	@Test
 	@Order(10)
-	public void successfulCredentialViewAndUpdate() throws InterruptedException {
+	public void shouldSuccessfullyViewAndUpdateCredential() throws InterruptedException {
 		HomePage homePage = new HomePage(driver);
 
 		homePage.openEditCredentialModal(0);
@@ -238,7 +232,7 @@ class CloudStorageApplicationTests {
 
 	@Test
 	@Order(11)
-	public void successfulCredentialDeletion() throws InterruptedException {
+	public void shouldSuccessfullyDeleteCredential() throws InterruptedException {
 
 		HomePage homePage = new HomePage(driver);
 		homePage.deleteCredential(1);
@@ -246,6 +240,89 @@ class CloudStorageApplicationTests {
 
 		Assertions.assertEquals(false, homePage.credentialExistsInList(CRED_URL_B, CRED_USERNAME_B, CRED_PASSWORD_B));
 
+	}
+
+	@Test
+	@Order(12)
+	public void shouldFailToAddNoteWithDuplicateTitle() throws InterruptedException {
+
+		HomePage homePage = new HomePage(driver);
+
+		// Adding notes
+		homePage.addNote(SECOND_NOTE_TITLE, SECOND_NOTE_DESCRIPTION);
+		sleep(5000);
+
+		Assertions.assertEquals(1, homePage.countNotesInListWithTitle(SECOND_NOTE_TITLE));
+	}
+
+	@Test
+	@Order(13)
+	public void shouldFailToAddFileWithDuplicateName() throws InterruptedException {
+
+		HomePage homePage = new HomePage(driver);
+
+		// Adding notes
+		homePage.uploadFile(FILENAME_B);
+		sleep(5000);
+
+		Assertions.assertEquals(1, homePage.countFilesInListWithName(FilenameUtils.getName(FILENAME_B)));
+	}
+
+	@Test
+	@Order(14)
+	public void shouldRedirectToLoginOnLogout() {
+		HomePage homePage = new HomePage(driver);
+		homePage.logout();
+
+		Assertions.assertEquals(LOGIN_PAGE_TITLE, driver.getTitle());
+	}
+
+	@Test
+	@Order(15)
+	public void shouldRedirectUnauthorizedUserToLogin() {
+		driver.get(baseURL + "/home");
+		Assertions.assertEquals(LOGIN_PAGE_TITLE, driver.getTitle());
+	}
+
+	@Test
+	@Order(16)
+	public void shouldNotAllowAUserToSeeAnotherUserNotes() throws InterruptedException {
+		driver.get(baseURL + "/signup");
+
+		SignupPage signupPage = new SignupPage(driver);
+		signupPage.signup(FIRSTNAME_A, LASTNAME_A, USERNAME_A, PASSWORD_A);
+
+		sleep(5000);
+
+		driver.get(baseURL + "/login");
+
+		LoginPage loginPage = new LoginPage(driver);
+		loginPage.login(USERNAME_A, PASSWORD_A);
+
+		HomePage homePage = new HomePage(driver);
+		sleep(5000);
+		Assertions.assertEquals(false, homePage.noteExistsInList(SECOND_NOTE_TITLE, SECOND_NOTE_DESCRIPTION));
+		Assertions.assertEquals(false, homePage.noteExistsInList(UPDATED_NOTE_TITLE, UPDATED_NOTE_DESCRIPTION));
+
+	}
+
+	@Test
+	@Order(17)
+	public void shouldNotAllowAUserToSeeAnotherUserFiles() throws InterruptedException {
+		HomePage homePage = new HomePage(driver);
+		sleep(5000);
+
+		Assertions.assertEquals(false, homePage.fileExistsInList(FILENAME_B));
+	}
+
+	@Test
+	@Order(18)
+	public void shouldNotAllowAUserToSeeAnotherUserCredentials() throws InterruptedException {
+		HomePage homePage = new HomePage(driver);
+		sleep(5000);
+
+		Assertions.assertEquals(false, homePage.credentialExistsInList(CRED_URL_A, UPDATED_USERNAME, UPDATED_PASSWORD));
+		Assertions.assertEquals(false, homePage.credentialExistsInList(CRED_URL_C, CRED_USERNAME_C, CRED_PASSWORD_C));
 	}
 
 }
