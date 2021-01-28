@@ -57,8 +57,8 @@ class CloudStorageApplicationTests {
 	private static final String CRED_PASSWORD_C = "r@viol1";
 
 	// Files
-	private static final String FILENAME_A = "/Users/tectoo/Downloads/output_15.pdf";
-	private static final String FILENAME_B = "/Users/tectoo/Downloads/nd-term-invoice.pdf";
+	private static final String FILENAME_A = "/tmp/output_15.pdf";
+	private static final String FILENAME_B = "/tmp/nd-term-invoice.pdf";
 
 	@BeforeAll
 	public static void beforeAll() {
