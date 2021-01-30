@@ -36,7 +36,9 @@ public class FileController {
     public String uploadFile(@RequestParam("fileUpload") MultipartFile file, @SessionAttribute("user") User user,
                              final RedirectAttributes redirectAttributes) throws IOException {
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
-        if(fileService.isDuplicateFile(filename)) {
+        if(filename.isEmpty()) {
+            redirectAttributes.addFlashAttribute("uploadError", "Please select a file!");
+        } else if(fileService.isDuplicateFile(filename)) {
             redirectAttributes.addFlashAttribute("uploadError", "A file with the name '" + filename + "' already exists.");
         } else {
             fileService.createFile(new File(null, filename, file.getContentType(), Long.toString(file.getSize()), user.getUserId(), file.getBytes()));
